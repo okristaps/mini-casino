@@ -4,6 +4,7 @@ class WebSocketStore {
   ws: WebSocket | null = null;
   messages: string[] = [];
   url: string = process.env.REACT_APP_WEB_SOCKET_URL ?? "";
+
   constructor() {
     makeAutoObservable(this);
   }
