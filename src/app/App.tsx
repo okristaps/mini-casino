@@ -1,7 +1,7 @@
-import Counter from "./counter";
+import WebSocketComponent from "./webSocketComponent";
 
 function App() {
-  return <Counter />;
+  return <WebSocketComponent />;
 }
 
 export default App;
