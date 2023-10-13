@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useMemo } from "react";
-import WebSocketStore from "../stores/store";
+import WebSocketStore from "@stores/store";
 
 type WebSocketContextType = {
   store: typeof WebSocketStore;
