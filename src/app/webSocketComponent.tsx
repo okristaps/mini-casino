@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import { useEffect } from "react";
-import { useWebSocketContext } from "./context/context";
+import { useWebSocketContext } from "@contexts/index";
 
 const WebSocketComponent = observer(() => {
   const { store } = useWebSocketContext();
