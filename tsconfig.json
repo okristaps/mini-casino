@@ -24,6 +24,7 @@
       "@stores/*": ["./src/app/stores/*"],
       "@contexts/*": ["./src/app/context/*"],
       "@components/*": ["./src/app/components/*"],
+      "@scss/*": ["./src/scss/*"],
     }
   },
   "include": [
