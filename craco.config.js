@@ -6,6 +6,7 @@ module.exports = {
       "@components": path.resolve(__dirname, "./src/app/components"),
       "@contexts": path.resolve(__dirname, "./src/app/context"),
       "@scss": path.resolve(__dirname, "./src/scss"),
+      "@app": path.resolve(__dirname, "./src/app"),
     },
   },
 };

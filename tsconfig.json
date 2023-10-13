@@ -25,6 +25,7 @@
       "@contexts/*": ["./src/app/context/*"],
       "@components/*": ["./src/app/components/*"],
       "@scss/*": ["./src/scss/*"],
+      "@app/*": ["./src/app/*"],
     }
   },
   "include": [

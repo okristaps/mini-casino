@@ -1,4 +1,4 @@
-import WebSocketComponent from "./webSocketComponent";
+import WebSocketComponent from "@components/webSocketComponent";
 
 function App() {
   return <WebSocketComponent />;
