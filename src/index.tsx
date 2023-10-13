@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import App from "./app/App";
+import App from "@app/index";
 import { WebSocketProvider } from "./app/context/context";
 import "@scss/index.scss";
 
