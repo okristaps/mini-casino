@@ -1,0 +1,15 @@
+
+$primaryFont: Arial, sans-serif;
+$fontSize: 16px;
+
+
+$backgroundColor: #ffffff;
+
+.basic {
+  font-family: $primaryFont;
+  font-size: $fontSize;
+  background-color: $backgroundColor;
+  padding: 20px;
+}
+
+

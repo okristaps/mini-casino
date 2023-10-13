@@ -30,7 +30,7 @@ const WebSocketComponent = observer(() => {
   };
 
   return (
-    <div>
+    <div className="basic">
       <h2>WebSocket Messages:</h2>
       <ul>
         {store?.messages.map((message, index) => (
