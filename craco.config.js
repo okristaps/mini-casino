@@ -7,6 +7,7 @@ module.exports = {
       "@contexts": path.resolve(__dirname, "./src/app/context"),
       "@scss": path.resolve(__dirname, "./src/scss"),
       "@app": path.resolve(__dirname, "./src/app"),
+      "@types": path.resolve(__dirname, "./src/types.ts"),
     },
   },
 };

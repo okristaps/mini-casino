@@ -1,8 +1,11 @@
 import { makeAutoObservable } from "mobx";
+import { MessageTypes, settings } from "@types";
 
 class WebSocketStore {
   ws: WebSocket | null = null;
+  balance: number = 0;
   messages: string[] = [];
+  settings: settings = { betLimits: { min: 0, max: 0 }, chips: [] };
   url: string = process.env.REACT_APP_WEB_SOCKET_URL ?? "";
 
   constructor() {
@@ -15,6 +18,17 @@ class WebSocketStore {
       console.log("WebSocket connected");
     };
     this.ws.onmessage = (event) => {
+      const type: MessageTypes = event.data.type;
+
+      switch (type) {
+        case MessageTypes.settings:
+          this.settings = event.data.payload;
+          break;
+
+        default:
+          break;
+      }
+
       this.addMessage(event.data);
     };
     this.ws.onclose = () => {
@@ -23,6 +37,8 @@ class WebSocketStore {
   }
 
   sendWebSocketMessage(message: string) {
+    console.log("message", message);
+
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(message);
     }
