@@ -5,6 +5,9 @@ import { useWebSocketContext } from "@contexts/index";
 const WebSocketComponent = observer(() => {
   const { store } = useWebSocketContext();
 
+  const { settings } = store;
+  console.log("settings", settings.betLimits);
+
   useEffect(() => {
     store.connectWebSocket();
     return () => {

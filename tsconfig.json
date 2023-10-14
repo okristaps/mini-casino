@@ -26,6 +26,7 @@
       "@components/*": ["./src/app/components/*"],
       "@scss/*": ["./src/scss/*"],
       "@app/*": ["./src/app/*"],
+      "@types": ["./src/types.ts"]
     }
   },
   "include": [
