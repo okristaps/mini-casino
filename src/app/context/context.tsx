@@ -1,20 +1,22 @@
-import { ReactNode, createContext, useContext, useMemo } from "react";
 import WebSocketStore from "@stores/store";
+import { ReactNode, createContext, useContext } from "react";
 
 type WebSocketContextType = {
   store: typeof WebSocketStore;
 };
 
-const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
-
 type WebSocketProviderProps = {
   children: ReactNode;
 };
 
-export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
-  const store = useMemo(() => ({ store: WebSocketStore }), []);
+export const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
 
-  return <WebSocketContext.Provider value={store}>{children}</WebSocketContext.Provider>;
+export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
+  return (
+    <WebSocketContext.Provider value={{ store: WebSocketStore }}>
+      {children}
+    </WebSocketContext.Provider>
+  );
 };
 
 export function useWebSocketContext() {

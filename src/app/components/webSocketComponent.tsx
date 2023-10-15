@@ -8,13 +8,6 @@ const WebSocketComponent = observer(() => {
   const { settings } = store;
   console.log("settings", settings.betLimits);
 
-  useEffect(() => {
-    store.connectWebSocket();
-    return () => {
-      store.disconnectWebSocket();
-    };
-  }, [store]);
-
   const sendStartGame = () => {
     const message = {
       type: "startGame",
@@ -40,30 +33,6 @@ const WebSocketComponent = observer(() => {
           <li key={index}>{message}</li>
         ))}
       </ul>
-
-      <button
-        onClick={() => {
-          sendStartGame();
-        }}
-      >
-        Start game
-      </button>
-
-      <button
-        onClick={() => {
-          sendPlaceBet("A1", 0.5);
-        }}
-      >
-        Place bet A1 0.5
-      </button>
-
-      <button
-        onClick={() => {
-          sendPlaceBet("T20", 500);
-        }}
-      >
-        Place bet T20 500
-      </button>
     </div>
   );
 });

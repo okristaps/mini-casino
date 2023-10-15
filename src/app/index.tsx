@@ -1,52 +1,85 @@
 import Grid from "@components/grid/grid";
 import WebSocketComponent from "@components/webSocketComponent";
-import { useState } from "react";
+import { observer } from "mobx-react";
+import { useEffect, useState } from "react";
+import { useWebSocketContext } from "./context";
+import { Phases } from "@types";
+import { BetOptions, Info } from "./components";
 
-function App() {
-  const [selectedCells, setSelectedCells] = useState<{ cellKey: string; bet: number }[]>([]);
-  const [selectedBet, setSelectedBet] = useState<number>(0.1);
+const App = observer(() => {
+  const { store } = useWebSocketContext();
 
-  const handleCellClick = (cellKey: string) => {
-    const cellIndex = selectedCells.findIndex((cell) => cell.cellKey === cellKey);
-    const updatedCell = { cellKey, bet: selectedBet };
+  const {
+    selectedCells,
+    selectedBet,
+    setSelectedBet,
+    lastPayout,
+    multipliers,
+    phase,
+    previousCells,
+    balance,
+  } = store;
 
-    cellIndex !== -1 ? (selectedCells[cellIndex] = updatedCell) : selectedCells.push(updatedCell);
-    setSelectedCells([...selectedCells]);
-  };
+  console.log("multipliers", multipliers);
 
-  const handleRemoveBet = (cellKey: string) => {
-    const updatedCells = selectedCells.filter((cell) => cell.cellKey !== cellKey);
-    setSelectedCells(updatedCells);
-  };
-
-  const handleBetSelection = (bet: number) => {
-    setSelectedBet(bet);
-  };
+  useEffect(() => {
+    store.connectWebSocket();
+    return () => {
+      store.disconnectWebSocket();
+    };
+  }, [store]);
 
   const betOptions: number[] = [0.1, 0.5, 1, 2, 5, 10, 25, 100, 500];
+  const betsDisabled = phase !== Phases.betsOpen || balance < selectedBet || balance === 0;
+
+  const handleCellClick = async (cellKey: string) =>
+    await store
+      .sendWebSocketMessage(
+        JSON.stringify({
+          type: "placeBet",
+          action: {
+            [cellKey]: selectedBet,
+          },
+        })
+      )
+      .then(() => {
+        store.handleBet(cellKey, selectedBet);
+      })
+      .catch((err) => console.log("error", err));
+
+  const sendStartGame = async () =>
+    await store
+      .sendWebSocketMessage(JSON.stringify({ type: "startGame" }))
+      .then(() => store.setPreviousBets());
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
       <div>
-        {betOptions.map((bet) => (
-          <button
-            style={{ backgroundColor: bet === selectedBet ? "green" : "white" }}
-            key={bet}
-            onClick={() => handleBetSelection(bet)}
-          >
-            Bet ${bet}
-          </button>
-        ))}
+        <BetOptions
+          balance={balance}
+          betOptions={betOptions}
+          selectedBet={selectedBet}
+          handleBetSelection={(bet: number) => store.setSelectedBet(bet)}
+        />
+        <button onClick={sendStartGame}>Start Game</button>
+        <Grid
+          betsDisabled={betsDisabled}
+          phase={phase}
+          multipliers={multipliers}
+          selectedCells={selectedCells}
+          size={5}
+          onCellClick={handleCellClick}
+        />
+        <WebSocketComponent />
       </div>
-      <Grid
-        onRemoveBet={handleRemoveBet}
-        selectedCells={selectedCells}
-        size={5}
-        onCellClick={handleCellClick}
-      />
-      <WebSocketComponent />
+      <Info {...store} />
     </div>
   );
-}
+});
 
 export default App;
