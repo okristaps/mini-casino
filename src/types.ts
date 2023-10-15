@@ -7,7 +7,16 @@ type BetPayload = {
   [key: string]: number;
 };
 
-export interface settings {
+export type Bet = {
+  cellKey: string;
+  bet: number;
+};
+
+export type Multiplier = {
+  [key: string]: number;
+};
+
+export interface Settings {
   betLimits: BetLimits;
   chips: number[];
 }
@@ -41,16 +50,4 @@ export interface RecievedMessage {
 export interface SendMessage {
   type: MessageTypes;
   action?: BetPayload;
-}
-
-export enum BetOptions {
-  Bet0_1 = 0.1,
-  Bet0_5 = 0.5,
-  Bet1 = 1,
-  Bet2 = 2,
-  Bet5 = 5,
-  Bet10 = 10,
-  Bet25 = 25,
-  Bet100 = 100,
-  Bet500 = 500,
 }
