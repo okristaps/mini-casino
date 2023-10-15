@@ -1,3 +1,7 @@
+import { useWebSocketContext } from "@contexts/index";
+import { observer } from "mobx-react";
+import Grid from "./grid/grid";
+
 const Info = ({
   phase,
   balance,
@@ -19,12 +23,12 @@ const Info = ({
 const BetOptions = ({
   balance,
   betOptions,
-  selectedBet,
+  betAmount,
   handleBetSelection,
 }: {
   balance: number;
   betOptions: number[];
-  selectedBet: number;
+  betAmount: number;
   handleBetSelection: (bet: number) => void;
 }) => {
   return (
@@ -32,7 +36,7 @@ const BetOptions = ({
       {betOptions.map((bet) => (
         <button
           disabled={bet > balance}
-          style={{ backgroundColor: bet === selectedBet ? "green" : "white" }}
+          style={{ backgroundColor: bet === betAmount ? "green" : "white" }}
           key={bet}
           onClick={() => handleBetSelection(bet)}
         >
@@ -43,4 +47,19 @@ const BetOptions = ({
   );
 };
 
-export { Info, BetOptions };
+const ListMessagesComponent = observer(() => {
+  const { store } = useWebSocketContext();
+
+  return (
+    <div className="basic">
+      <h2>WebSocket Messages:</h2>
+      <ul>
+        {store?.messages.map((message, index) => (
+          <li key={index}>{message}</li>
+        ))}
+      </ul>
+    </div>
+  );
+});
+
+export { Info, BetOptions, ListMessagesComponent, Grid };

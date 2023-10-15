@@ -26,6 +26,7 @@ const Grid: React.FC<GridProps> = observer(
 
         rowItems.push(
           <div
+            key={cellKey}
             onClick={() => !betsDisabled && onCellClick(cellKey)}
             className="grid-cell"
             style={{

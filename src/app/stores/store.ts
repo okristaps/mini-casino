@@ -11,17 +11,16 @@ class WebSocketStore {
   selectedCells: bet[] = [];
   previousCells: bet[] = [];
   multipliers: multiplier = {};
-  selectedBet: number = 0.1;
+  betAmount: number = 0.1;
   lastPayout: number = 0;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  setSelectedBet(bet: number) {
-    this.selectedBet = bet;
+  setBetAmount(bet: number): void {
+    this.betAmount = bet;
   }
-
   setPreviousBets() {
     this.previousCells = this.selectedCells;
   }
