@@ -7,16 +7,16 @@ type BetPayload = {
   [key: string]: number;
 };
 
-export type bet = {
+export type Bet = {
   cellKey: string;
   bet: number;
 };
 
-export type multiplier = {
+export type Multiplier = {
   [key: string]: number;
 };
 
-export interface settings {
+export interface Settings {
   betLimits: BetLimits;
   chips: number[];
 }

@@ -1,4 +1,4 @@
-import { Phases, multiplier } from "@types";
+import { Phases, Multiplier } from "@types";
 import { observer } from "mobx-react";
 import React from "react";
 import { getBgColor } from "./helpers";
@@ -7,7 +7,7 @@ interface GridProps {
   size: number;
   selectedCells: { cellKey: string; bet: number }[];
   onCellClick: (cellKey: string) => void;
-  multipliers: multiplier;
+  multipliers: Multiplier;
   phase: Phases | string;
   betsDisabled: boolean;
 }

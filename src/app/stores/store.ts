@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { MessageTypes, Phases, bet, multiplier, settings } from "@types";
+import { MessageTypes, Phases, Bet, Multiplier, Settings } from "@types";
 
 class WebSocketStore {
   url: string = process.env.REACT_APP_WEB_SOCKET_URL ?? "";
@@ -7,10 +7,10 @@ class WebSocketStore {
   balance: number = 0;
   messages: string[] = [];
   phase: Phases | string = "";
-  settings: settings = { betLimits: { min: 0, max: 0 }, chips: [] };
-  selectedCells: bet[] = [];
-  previousCells: bet[] = [];
-  multipliers: multiplier = {};
+  settings: Settings = { betLimits: { min: 0, max: 0 }, chips: [] };
+  selectedCells: Bet[] = [];
+  previousCells: Bet[] = [];
+  multipliers: Multiplier = {};
   betAmount: number = 0.1;
   lastPayout: number = 0;
 
