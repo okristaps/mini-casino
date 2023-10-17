@@ -1,18 +1,44 @@
 @import 'grid';
+@import 'betoptions';
 
 
 
 $primaryFont: Arial, sans-serif;
 $fontSize: 16px;
+$fontColor: white;
 
+$backgroundColor: #213744;
 
-$backgroundColor: #ffffff;
-
-.basic {
+.root {
   font-family: $primaryFont;
   font-size: $fontSize;
-  background-color: $backgroundColor;
-  padding: 20px;
+color: $fontColor;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+body {
+  background-color: $backgroundColor !important;
 }
 
 
+
+
+
+.info-container {
+  text-align: center;
+
+  h1 {
+    font-size: 24px;
+    margin: 0px 0;
+  }
+
+  .feature-win {
+    color: #4caf50;
+  }
+
+  .last-payout {
+    color: #f44336;
+  }
+}

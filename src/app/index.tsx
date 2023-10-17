@@ -1,4 +1,4 @@
-import { BetOptions, Grid, Info, ListMessagesComponent } from "@components/index";
+import { BetOptions, Grid, Info } from "@components/index";
 import { useWebSocketContext } from "@contexts/index";
 import { Phases } from "@types";
 import { observer } from "mobx-react";
@@ -6,18 +6,15 @@ import { useEffect } from "react";
 
 const App = observer(() => {
   const { store } = useWebSocketContext();
-  const {
-    selectedCells,
-    betAmount,
-    multipliers,
-    phase,
-    balance,
-    settings,
-    betSum,
-    previousBetInfo,
-  } = store;
-  const betsDisabled = phase !== Phases.betsOpen || balance < betAmount || balance === 0;
-  // const repeatDisabled = !repeatEnabled ||
+  const { selectedCells, betAmount, multipliers, phase, balance, settings, previousBetInfo } =
+    store;
+
+  const betsDisabled =
+    phase !== Phases.betsOpen ||
+    balance < betAmount ||
+    balance === 0 ||
+    betAmount < settings.chips[0] ||
+    previousBetInfo.repeatEnabled;
 
   useEffect(() => {
     store.connectWebSocket();
@@ -30,7 +27,7 @@ const App = observer(() => {
     if (betAmount > balance) {
       store.setBetAmount(settings.chips[0]);
     }
-  }, [betAmount, balance]);
+  }, [betAmount, balance, settings, store]);
 
   const handleCellClick = async (cellKey: string) =>
     await store
@@ -47,81 +44,57 @@ const App = observer(() => {
       })
       .catch((err) => console.log("error", err));
 
-  const handleRepeat = async () => {
-    const action: { [key: string]: number } = {};
-
-    for (const item of previousBetInfo.selectedCells) {
-      if (item?.cellKey) {
-        action[item.cellKey] = item.bet;
-      }
-    }
-
-    return await store
-      .sendWebSocketMessage(
-        JSON.stringify({
-          type: "placeBet",
-          action,
-        })
-      )
-      .then(() => {
-        store.repeatPreviousBets();
-      })
-      .catch((err) => console.log("error", err));
-  };
-
-  const sendStartGame = async () =>
-    await store
-      .sendWebSocketMessage(JSON.stringify({ type: "startGame" }))
-      .then(() => store.setPreviousBets());
-
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-      }}
-    >
-      <div>
-        <BetOptions
-          balance={balance}
-          betOptions={settings.chips}
-          betAmount={betAmount}
-          handleBetSelection={(bet: number) => store.setBetAmount(bet)}
-        />
-
-        {phase === Phases.betsOpen && (
-          <button disabled={betSum === 0} onClick={sendStartGame}>
-            Start Game
-          </button>
-        )}
-
-        {phase === Phases.betsOpen && Boolean(previousBetInfo?.selectedCells?.length) && (
-          <button
-            disabled={
-              previousBetInfo.repeatEnabled ||
-              selectedCells.length ||
-              previousBetInfo.betSum > balance
-            }
-            onClick={handleRepeat}
-          >
-            Repeat
-          </button>
-        )}
-
-        <Grid
-          betAmount={betAmount}
-          settings={settings}
-          betsDisabled={betsDisabled || previousBetInfo.repeatEnabled}
-          phase={phase}
-          multipliers={multipliers}
-          selectedCells={selectedCells}
-          size={5}
-          onCellClick={handleCellClick}
-        />
-        <ListMessagesComponent />
+    <div className="root">
+      <div style={{ textAlign: "center" }}>
+        <h1 style={{ color: "white" }}> {phase} </h1>
       </div>
 
-      <Info {...store} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          flex: 1,
+        }}
+      >
+        <div
+          style={{
+            height: "100%",
+            width: 300,
+            paddingRight: 20,
+            paddingLeft: 20,
+          }}
+        >
+          <Info {...store}>
+            <BetOptions
+              balance={balance}
+              betOptions={settings.chips}
+              betAmount={betAmount}
+              handleBetSelection={(bet: number) => store.setBetAmount(bet)}
+            />
+          </Info>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            width: "100%",
+            backgroundColor: "#0f212f",
+            padding: 20,
+          }}
+        >
+          <Grid
+            betAmount={betAmount}
+            settings={settings}
+            betsDisabled={betsDisabled}
+            phase={phase}
+            multipliers={multipliers}
+            selectedCells={selectedCells}
+            size={5}
+            onCellClick={handleCellClick}
+          />
+        </div>
+      </div>
     </div>
   );
 });

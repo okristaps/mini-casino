@@ -10,9 +10,9 @@ class WebSocketStore {
   phase: Phases | string = "";
   settings: Settings = { betLimits: { min: 0, max: 0 }, chips: [] };
   selectedCells: Bet[] = [];
-  previousCells: Bet[] = [];
+
   multipliers: Multiplier = {};
-  betAmount: number = 0.1;
+  betAmount: number = 0;
   lastPayout: number = 0;
 
   previousBetInfo: any = {
@@ -40,11 +40,28 @@ class WebSocketStore {
   repeatPreviousBets() {
     this.selectedCells = this.previousBetInfo.selectedCells;
     this.betSum = this.previousBetInfo.betSum;
-
     this.previousBetInfo = {
       ...this.previousBetInfo,
       repeatEnabled: true,
     };
+  }
+
+  undoLastBet() {
+    const lastBet = this.selectedCells[this.selectedCells.length - 1];
+    this.selectedCells = this.selectedCells.filter((cell) => cell.cellKey !== lastBet.cellKey);
+    this.balance += lastBet.bet;
+    this.betSum -= lastBet.bet;
+  }
+
+  doubleBets() {
+    this.selectedCells = this.selectedCells.map((cell) => {
+      return {
+        ...cell,
+        bet: cell.bet * 2,
+      };
+    });
+    this.balance = this.balance - this.betSum;
+    this.betSum = this.betSum * 2;
   }
 
   handleBet(cellKey: string, bet: number) {

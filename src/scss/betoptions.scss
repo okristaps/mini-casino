@@ -1,0 +1,23 @@
+.bet-options-container {
+    select {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  
+    option {
+      font-size: 14px;
+      background-color: #fff;
+    }
+  
+    option:disabled {
+      color: #888; 
+    }
+  
+    option:selected {
+      background-color: #4caf50;
+      color: #fff;
+    }
+  }
