@@ -1,21 +1,26 @@
 import { useWebSocketContext } from "@contexts/index";
 import { observer } from "mobx-react";
 import Grid from "./grid/grid";
+import { Phases } from "@types";
 
 const Info = ({
   phase,
   balance,
   lastPayout,
+  betSum,
 }: {
   phase: string;
   balance: number;
   lastPayout: number;
+  betSum: number;
 }) => {
   return (
     <div>
       <h1> Phase: {phase}</h1>
       <h1> Balance: {balance}</h1>
-      <h1> lastPayout: {lastPayout}</h1>
+      {<h1> Total Bet: {betSum}</h1>}
+      {phase === Phases.gameResult && lastPayout !== 0 && <h1> Feature win : {lastPayout}</h1>}
+      {phase === Phases.betsOpen && lastPayout !== 0 && <h1> lastPayout: {lastPayout}</h1>}
     </div>
   );
 };
