@@ -1,18 +1,177 @@
-@import 'grid';
-
-
+@import "grid";
+@import "betoptions";
 
 $primaryFont: Arial, sans-serif;
 $fontSize: 16px;
+$fontColor: white;
 
+$backgroundColor: #213744;
 
-$backgroundColor: #ffffff;
-
-.basic {
+.body {
   font-family: $primaryFont;
   font-size: $fontSize;
-  background-color: $backgroundColor;
+  color: $fontColor;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+body {
+  background-color: $backgroundColor !important;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.left-container {
+  height: 100%;
+  width: 300px;
   padding: 20px;
 }
 
+.grid-container {
+  flex: 1;
+  width: 100%;
+  background-color: #0f212f;
+  padding: 20px;
+}
+
+.info-container {
+  text-align: center;
+
+  h1 {
+    font-size: 24px;
+    margin: 0px 0;
+  }
+
+  .feature-win {
+    font-weight: 800;
+    color: #4caf50;
+  }
+
+  .last-payout {
+    color: #f44336;
+  }
+}
+
+.custom-button {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background: #183153;
+  box-shadow: 0px 6px 24px 0px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: none;
+  color: white;
+
+  &:not(:disabled):after {
+    content: " ";
+    width: 0%;
+    height: 100%;
+    background: #ffd401;
+    position: absolute;
+    transition: all 0.4s ease-in-out;
+    right: 0;
+  }
+
+  &:hover::after {
+    right: auto;
+    left: 0;
+    width: 100%;
+  }
+
+  span {
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    padding: 18px 25px;
+    font-size: 1.125em;
+    font-weight: 700;
+    z-index: 20;
+
+    &:not(:disabled):after {
+      transition: all 0.3s ease-in-out;
+      color: white;
+    }
+  }
+
+  &:not(:disabled):hover span {
+    color: #183153;
+    animation: scaleUp 0.3s ease-in-out;
+  }
+
+  &:disabled {
+    background-color: gray;
+    cursor: default;
+  }
+
+  &.green-button {
+    background-color: #4caf50;
+    transition: background-color 0.3s ease-in-out !important;
+    &:not(:disabled):hover {
+      background-color: #45a049 !important;
+    }
+    &:active {
+      background-color: #3e9148 !important;
+    }
+    &:before {
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out !important;
+    }
+    &:hover:before {
+      opacity: 1 !important;
+    }
+    &:disabled {
+      background-color: gray;
+      cursor: default;
+    }
+    &:not(:disabled):after {
+      background-color: transparent;
+      transition: none;
+    }
+  }
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  span:first-child {
+    font-size: 1.6em;
+    font-weight: bold;
+  }
+
+  span:last-child {
+    font-weight: 500;
+    font-size: 1.5em;
+    margin-top: 5px;
+  }
+}
 

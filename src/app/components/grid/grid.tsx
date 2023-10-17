@@ -2,6 +2,7 @@ import { Phases, Multiplier } from "@types";
 import { observer } from "mobx-react";
 import React from "react";
 import { getBgColor } from "./helpers";
+import { Settings } from "@types";
 
 interface GridProps {
   size: number;
@@ -10,10 +11,12 @@ interface GridProps {
   multipliers: Multiplier;
   phase: Phases | string;
   betsDisabled: boolean;
+  settings: Settings;
+  betAmount: number;
 }
 
 const Grid: React.FC<GridProps> = observer(
-  ({ size, selectedCells, onCellClick, multipliers, phase, betsDisabled }) => {
+  ({ size, selectedCells, onCellClick, multipliers, phase, betsDisabled, settings, betAmount }) => {
     const gridItems = [];
 
     for (let row = 1; row <= size; row++) {
@@ -24,14 +27,16 @@ const Grid: React.FC<GridProps> = observer(
         const bet = selectedCell?.bet ?? 0;
         const multiplier = multipliers[cellKey];
 
+        // default if bets disabled or disabled if one cell exceeds bet limit
+        const disabled = betsDisabled || bet + betAmount > settings.betLimits.max;
         rowItems.push(
           <div
             key={cellKey}
-            onClick={() => !betsDisabled && onCellClick(cellKey)}
+            onClick={() => !disabled && onCellClick(cellKey)}
             className="grid-cell"
             style={{
               backgroundColor: getBgColor(phase, bet, multiplier),
-              cursor: !betsDisabled ? "pointer" : "default",
+              cursor: !disabled ? "pointer" : "default",
             }}
           >
             <div className="cell-label">{cellKey}</div>
