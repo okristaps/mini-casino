@@ -1,7 +1,7 @@
+import { parseCellsToAction } from "@app/helpers";
 import { useWebSocketContext } from "@contexts/context";
 import { Phases } from "@types";
 import { observer } from "mobx-react";
-import Controls from "./controls";
 
 const Info = ({
   phase,
@@ -18,40 +18,70 @@ const Info = ({
 }) => {
   return (
     <div className="info-container">
-      <h1> Balance: {balance}</h1>
+      <div className="title-container">
+        <div className="column">
+          <span>Balance</span>
+          <span>{balance.toFixed(1)}</span>
+        </div>
+        <div className="column">
+          <span>Total Bet</span>
+          <span>{betSum.toFixed(1)}</span>
+        </div>
+      </div>
       {children}
-      <h1> Total Bet: {betSum}</h1>
-      {phase === Phases.gameResult && lastPayout !== 0 && (
-        <h1 className="feature-win"> Feature win : {lastPayout}</h1>
-      )}
-      {phase === Phases.betsOpen && lastPayout !== 0 && (
-        <h1 className="last-payout"> Last Payout: {lastPayout}</h1>
-      )}
-      {phase === Phases.betsOpen && <Controls />}
+
+      <div style={{ marginTop: 20 }}>
+        {lastPayout !== 0 && <h1 className="last-payout"> Last Payout: {lastPayout.toFixed(1)}</h1>}
+        {lastPayout !== 0 && (
+          <h1 className="feature-win" style={{ marginTop: 10, marginBottom: 10 }}>
+            Feature win : {lastPayout.toFixed(1)}
+          </h1>
+        )}
+      </div>
     </div>
   );
 };
-const BetOptions = ({
-  balance,
-  betOptions,
-  betAmount,
-  handleBetSelection,
-}: {
-  balance: number;
-  betOptions: number[];
-  betAmount: number;
-  handleBetSelection: (bet: number) => void;
-}) => {
+const BetOptions = () => {
+  const { store } = useWebSocketContext();
+  const { selectedCells, balance, betSum, betAmount, settings } = store;
+  const doubleDisabled = !selectedCells.length || balance < betSum;
+
+  const handleDoubleBets = async () =>
+    await store
+      .sendWebSocketMessage(
+        JSON.stringify({
+          type: "placeBet",
+          action: parseCellsToAction(selectedCells),
+        })
+      )
+      .then(() => store.doubleBets())
+      .catch((err) => console.log("error", err));
+
   return (
     <div className="bet-options-container">
-      <div style={{ textAlign: "start" }}> Bet amount: </div>
-      <select value={betAmount} onChange={(e) => handleBetSelection(parseInt(e.target.value))}>
-        {betOptions.map((bet) => (
+      <select value={betAmount} onChange={(e) => store.setBetAmount(parseInt(e.target.value))}>
+        {settings.chips.map((bet) => (
           <option value={bet} key={bet} disabled={bet > balance}>
             ${bet}
           </option>
         ))}
       </select>
+      <button
+        onClick={handleDoubleBets}
+        className="custom-button"
+        disabled={doubleDisabled}
+        style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, boxShadow: "none" }}
+      >
+        <span>Dobule</span>
+      </button>
+    </div>
+  );
+};
+
+const Header = ({ phase }: { phase: string }) => {
+  return (
+    <div style={{ textAlign: "center" }}>
+      <h1 style={{ color: "white" }}> {phase} </h1>
     </div>
   );
 };
@@ -71,4 +101,4 @@ const ListMessagesComponent = observer(() => {
   );
 });
 
-export { Info, BetOptions, ListMessagesComponent };
+export { BetOptions, Info, ListMessagesComponent, Header };

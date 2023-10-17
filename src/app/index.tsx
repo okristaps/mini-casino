@@ -1,4 +1,4 @@
-import { BetOptions, Grid, Info } from "@components/index";
+import { BetOptions, Controls, Grid, Header, Info } from "@components/index";
 import { useWebSocketContext } from "@contexts/index";
 import { Phases } from "@types";
 import { observer } from "mobx-react";
@@ -45,44 +45,16 @@ const App = observer(() => {
       .catch((err) => console.log("error", err));
 
   return (
-    <div className="root">
-      <div style={{ textAlign: "center" }}>
-        <h1 style={{ color: "white" }}> {phase} </h1>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          flex: 1,
-        }}
-      >
-        <div
-          style={{
-            height: "100%",
-            width: 300,
-            paddingRight: 20,
-            paddingLeft: 20,
-          }}
-        >
+    <div className="body">
+      <Header phase={phase} />
+      <div className="content-wrapper">
+        <div className="left-container">
           <Info {...store}>
-            <BetOptions
-              balance={balance}
-              betOptions={settings.chips}
-              betAmount={betAmount}
-              handleBetSelection={(bet: number) => store.setBetAmount(bet)}
-            />
+            <BetOptions />
+            <Controls />
           </Info>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flex: 1,
-            width: "100%",
-            backgroundColor: "#0f212f",
-            padding: 20,
-          }}
-        >
+        <div className="grid-container">
           <Grid
             betAmount={betAmount}
             settings={settings}
