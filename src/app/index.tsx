@@ -1,13 +1,22 @@
-import { BetOptions, Controls, Grid, Header, Info } from "@components/index";
+import { BetOptions, Controls, Grid, Header, Info, ListMessagesComponent } from "@components/index";
 import { useWebSocketContext } from "@contexts/index";
 import { Phases } from "@types";
 import { observer } from "mobx-react";
 import { useEffect } from "react";
+import { levels } from "./constants";
 
 const App = observer(() => {
   const { store } = useWebSocketContext();
-  const { selectedCells, betAmount, multipliers, phase, balance, settings, previousBetInfo } =
-    store;
+  const {
+    selectedCells,
+    betAmount,
+    multipliers,
+    phase,
+    balance,
+    settings,
+    previousBetInfo,
+    cheatSettings,
+  } = store;
 
   const betsDisabled =
     phase !== Phases.betsOpen ||
@@ -44,29 +53,33 @@ const App = observer(() => {
       })
       .catch((err) => console.log("error", err));
 
+  const handleHeader = () => store.doWeirdStuff();
+
   return (
     <div className="body">
-      <Header phase={phase} />
       <div className="content-wrapper">
         <div className="left-container">
+          <Header phase={phase} handleClick={handleHeader} />
           <Info {...store}>
             <BetOptions />
             <Controls />
           </Info>
         </div>
-        <div className="grid-container">
+        <div className="game-container">
           <Grid
+            cheatsEnabled={store.cheatSettings.cheatsEnabled}
             betAmount={betAmount}
             settings={settings}
             betsDisabled={betsDisabled}
             phase={phase}
             multipliers={multipliers}
             selectedCells={selectedCells}
-            size={5}
+            size={levels[store.levelSettings.selectedLevel].grid}
             onCellClick={handleCellClick}
           />
         </div>
       </div>
+      <ListMessagesComponent />
     </div>
   );
 });

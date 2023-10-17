@@ -10,6 +10,6 @@ export const getBgColor = (phase: string, bet: number, multiplier: number): stri
       ? "#808080"
       : "transparent"
     : bet > 0
-    ? "#808080"
+    ? "#3BC1E2"
     : "transparent";
 };

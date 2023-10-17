@@ -12,7 +12,8 @@ const Controls: React.FC = observer(() => {
   const repeatDisbled =
     previousBetInfo.repeatEnabled ||
     !previousBetInfo.selectedCells.length ||
-    previousBetInfo.betSum > balance;
+    previousBetInfo.betSum > balance ||
+    phase !== Phases.betsOpen;
 
   const handleRepeat = async () =>
     await store

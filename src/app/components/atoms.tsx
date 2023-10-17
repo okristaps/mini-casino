@@ -78,9 +78,9 @@ const BetOptions = () => {
   );
 };
 
-const Header = ({ phase }: { phase: string }) => {
+const Header = ({ phase, handleClick }: { phase: string; handleClick: () => void }) => {
   return (
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center" }} onClick={handleClick}>
       <h1 style={{ color: "white" }}> {phase} </h1>
     </div>
   );
@@ -93,9 +93,12 @@ const ListMessagesComponent = observer(() => {
     <div className="basic">
       <h2>WebSocket Messages:</h2>
       <ul>
-        {store?.messages.map((message, index) => (
-          <li key={index}>{message}</li>
-        ))}
+        {store?.messages
+          .slice()
+          .reverse()
+          ?.map((message, index) => (
+            <li key={index}>{JSON.stringify(JSON.parse(message)?.payload?.multipliers)}</li>
+          ))}
       </ul>
     </div>
   );
