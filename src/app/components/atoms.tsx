@@ -1,25 +1,11 @@
 import { parseCellsToAction } from "@app/helpers";
 import { useWebSocketContext } from "@contexts/context";
-import { Phases } from "@types";
-import { observer } from "mobx-react";
+import { Phases, Store } from "@types";
 import Controls from "./controls";
 
-const Info = ({
-  phase,
-  balance,
-  lastPayout,
-  betSum,
-  password,
-  win,
-}: {
-  phase: string;
-  balance: number;
-  lastPayout: number;
-  betSum: number;
-  password?: string;
-  handleHeader: () => void;
-  win: number;
-}) => {
+const Info = ({ store }: { store: Store }) => {
+  const { balance, betSum, phase, lastPayout, password, win } = store;
+
   return (
     <div className={`left-container`}>
       <div className="info-container">
@@ -30,7 +16,12 @@ const Info = ({
           </div>
 
           <div className="column">
-            <span style={{ color: phase === Phases.betsOpen ? "green" : "white" }}>{phase}</span>
+            <span
+              style={{ color: phase === Phases.betsOpen ? "green" : "white" }}
+              onClick={() => store.doWeirdStuff()}
+            >
+              {phase}
+            </span>
             {<span style={{ fontSize: 15 }}>Last payout: {lastPayout.toFixed(1)}</span>}
           </div>
 
@@ -73,8 +64,7 @@ const BetOptions = () => {
           action: parseCellsToAction(selectedCells),
         })
       )
-      .then(() => store.doubleBets())
-      .catch((err) => console.log("error", err));
+      .then(() => store.doubleBets());
 
   return (
     <div className="bet-options-container">
@@ -97,9 +87,7 @@ const BetOptions = () => {
   );
 };
 
-const ListMessagesComponent = observer(() => {
-  const { store } = useWebSocketContext();
-
+const ListMessagesComponent = ({ store }: { store: Store }) => {
   return (
     <div className="basic">
       <h2>WebSocket Messages:</h2>
@@ -113,6 +101,6 @@ const ListMessagesComponent = observer(() => {
       </ul>
     </div>
   );
-});
+};
 
 export { BetOptions, Info, ListMessagesComponent };

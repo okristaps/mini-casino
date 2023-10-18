@@ -9,7 +9,7 @@ interface Props {
 const ErrorModal: React.FC<Props> = ({ error, onClose }) => {
   return (
     <Modal isOpen={Boolean(error)} closeModal={onClose}>
-      {error}
+      {JSON.stringify(error)}
       {error === "WebSocket disconnected" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           Unfortunately you have to start over :(
