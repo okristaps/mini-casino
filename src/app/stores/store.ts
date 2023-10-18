@@ -1,7 +1,21 @@
 import { makeAutoObservable } from "mobx";
 import { MessageTypes, Phases, Bet, Multiplier, Settings } from "@types";
+import { levels } from "@app/constants";
+import { findKeyWithLargestValue } from "./helpers";
+
+interface CheatSettings {
+  cheatsEnabled: boolean;
+  clickCount: number;
+  succCells: string[];
+}
 
 class WebSocketStore {
+  levelSettings = {
+    selectedLevel: 2,
+    password: "Hello World!",
+  };
+
+  selectedLevel = levels[1];
   url: string = process.env.REACT_APP_WEB_SOCKET_URL ?? "";
   ws: WebSocket | null = null;
   balance: number = 0;
@@ -10,6 +24,7 @@ class WebSocketStore {
   phase: Phases | string = "";
   settings: Settings = { betLimits: { min: 0, max: 0 }, chips: [] };
   selectedCells: Bet[] = [];
+  password: string = "";
 
   multipliers: Multiplier = {};
   betAmount: number = 0;
@@ -19,6 +34,12 @@ class WebSocketStore {
     betSum: 0,
     selectedCells: [],
     repeatEnabled: false,
+  };
+
+  cheatSettings: CheatSettings = {
+    cheatsEnabled: false,
+    clickCount: 0,
+    succCells: [],
   };
 
   constructor() {
@@ -75,10 +96,20 @@ class WebSocketStore {
     }
   }
 
+  doWeirdStuff() {
+    this.cheatSettings.clickCount = this.cheatSettings.clickCount + 1;
+    if (this.cheatSettings?.clickCount === 10) this.cheatSettings.cheatsEnabled = true;
+  }
+
   async connectWebSocket() {
     return new Promise<void>((resolve, reject) => {
       try {
-        this.ws = new WebSocket(this.url);
+        this.ws = new WebSocket(
+          this.url +
+            `/?field=${levels[this.levelSettings.selectedLevel].field}&password=${
+              this.levelSettings.password
+            }}`
+        );
         this.ws.onopen = () => {
           console.log("WebSocket connected");
           resolve();
@@ -94,6 +125,8 @@ class WebSocketStore {
           if (payload.phase === Phases.gameResult) {
             this.lastPayout = payload.payout > 0 ? payload.payout : this.lastPayout;
             this.multipliers = payload.multipliers;
+            const test = findKeyWithLargestValue(payload.multipliers);
+            this.cheatSettings.succCells = [...this.cheatSettings.succCells, `${test}`];
             this.setPreviousBets();
           }
 
@@ -108,6 +141,13 @@ class WebSocketStore {
           if (type === MessageTypes.game) {
             this.phase = payload.phase;
             this.balance = payload.balance;
+
+            if (payload.password && payload.password !== this.levelSettings.password) {
+              this.levelSettings = {
+                password: payload.password,
+                selectedLevel: this.levelSettings.selectedLevel + 1,
+              };
+            }
           }
           this.addMessage(event.data);
         };
@@ -123,7 +163,6 @@ class WebSocketStore {
   async sendWebSocketMessage(message: string) {
     return new Promise<void>((resolve, reject) => {
       if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        console.log("message", message);
         try {
           this.ws.send(message);
           resolve();

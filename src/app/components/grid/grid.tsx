@@ -1,8 +1,11 @@
 import { Phases, Multiplier } from "@types";
 import { observer } from "mobx-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { getBgColor } from "./helpers";
 import { Settings } from "@types";
+
+import ColumnSelector from "@components/cheats/colcheats";
+import { useWebSocketContext } from "@contexts/context";
 
 interface GridProps {
   size: number;
@@ -13,10 +16,22 @@ interface GridProps {
   betsDisabled: boolean;
   settings: Settings;
   betAmount: number;
+  cheatsEnabled?: boolean;
 }
 
 const Grid: React.FC<GridProps> = observer(
-  ({ size, selectedCells, onCellClick, multipliers, phase, betsDisabled, settings, betAmount }) => {
+  ({
+    size,
+    selectedCells,
+    onCellClick,
+    multipliers,
+    phase,
+    betsDisabled,
+    settings,
+    betAmount,
+    cheatsEnabled = true,
+  }) => {
+    const { store } = useWebSocketContext();
     const gridItems = [];
 
     for (let row = 1; row <= size; row++) {
@@ -40,9 +55,12 @@ const Grid: React.FC<GridProps> = observer(
             }}
           >
             <div className="cell-label">{cellKey}</div>
-            <div className="cell-bet">Bet: ${bet}</div>
-            {multiplier && phase === Phases.gameResult && (
-              <div className="cell-multiplier">x{multiplier}</div>
+            {/* {bet > 0 && <div className="cell-bet">${bet.toFixed(1)}</div>} */}
+            {multiplier > 0 && phase === Phases.gameResult && (
+              <div className="cell-multiplier">x{multiplier.toFixed(1)}</div>
+            )}
+            {cheatsEnabled && store.cheatSettings.succCells.includes(cellKey) && (
+              <div style={{ flex: 1, background: "black" }}> xxxxxx</div>
             )}
           </div>
         );
@@ -54,7 +72,31 @@ const Grid: React.FC<GridProps> = observer(
       );
     }
 
-    return <div className="grid-container">{gridItems}</div>;
+    const columnKeys = gridItems?.flatMap(
+      (obj) => obj?.props?.children?.map((child: any) => child.key) || []
+    );
+
+    const groupedKeys: Record<string, string[]> = (columnKeys || [])?.reduce(
+      (groups: Record<string, string[]>, key: string) => {
+        const initialLetter = key.charAt(0);
+
+        if (!groups[initialLetter]) {
+          groups[initialLetter] = [];
+        }
+
+        groups[initialLetter].push(key);
+
+        return groups;
+      },
+      {}
+    );
+
+    return (
+      <div style={{ flexDirection: "column" }}>
+        {cheatsEnabled && <ColumnSelector groupedKeys={groupedKeys} />}
+        <div className="grid-container">{gridItems}</div>
+      </div>
+    );
   }
 );
 
