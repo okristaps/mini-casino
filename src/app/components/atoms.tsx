@@ -9,12 +9,14 @@ const Info = ({
   lastPayout,
   betSum,
   children,
+  password,
 }: {
   phase: string;
   balance: number;
   lastPayout: number;
   betSum: number;
   children?: React.ReactNode;
+  password?: string;
 }) => {
   return (
     <div className="info-container">
@@ -35,6 +37,11 @@ const Info = ({
         {lastPayout !== 0 && (
           <h1 className="feature-win" style={{ marginTop: 10, marginBottom: 10 }}>
             Feature win : {lastPayout.toFixed(1)}
+          </h1>
+        )}
+        {password && (
+          <h1 className="feature-win" style={{ marginTop: 10, marginBottom: 10 }}>
+            Unlocked password: {password}
           </h1>
         )}
       </div>

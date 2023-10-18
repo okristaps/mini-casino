@@ -158,11 +158,7 @@ class WebSocketStore {
             this.balance = payload.balance;
 
             if (payload.password && payload.password !== this.levelSettings.password) {
-              this.levelSettings = {
-                gameStarted: true,
-                password: payload.password,
-                selectedLevel: this.levelSettings.selectedLevel + 1,
-              };
+              this.password = payload.password;
             }
           }
           this.addMessage(event.data);
