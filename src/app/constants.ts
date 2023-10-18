@@ -4,3 +4,5 @@ export const levels: any = {
   3: { grid: 20, field: 400 },
   4: { grid: 25, field: 600 },
 };
+
+export const passwords: string[] = ["Hello World!", "asjnbaskjdhaskjd", "asdhaskjdhaskjhdaskjd"];

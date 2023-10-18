@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import Modal from "./modal";
 import { observer } from "mobx-react";
 import { useWebSocketContext } from "@contexts/context";
+import { passwords } from "@app/constants";
 
 const LevelsModal = observer(() => {
   const { store } = useWebSocketContext();
@@ -45,7 +46,7 @@ const LevelsModal = observer(() => {
       <button
         className="custom-button green-button"
         style={{ marginTop: 20 }}
-        disabled={selectedOption === 1 ? false : inputValue.length < 1}
+        disabled={selectedOption === 1 ? false : passwords[selectedOption - 2] !== inputValue}
         onClick={handleStart}
       >
         <span> Start </span>
