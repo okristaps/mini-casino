@@ -43,8 +43,8 @@ const Info = ({
 };
 const BetOptions = () => {
   const { store } = useWebSocketContext();
-  const { selectedCells, balance, betSum, betAmount, settings } = store;
-  const doubleDisabled = !selectedCells.length || balance < betSum;
+  const { selectedCells, balance, betSum, betAmount, settings, phase } = store;
+  const doubleDisabled = !selectedCells.length || balance < betSum || phase !== Phases.betsOpen;
 
   const handleDoubleBets = async () =>
     await store
