@@ -11,9 +11,6 @@ $backgroundColor: #213744;
   font-family: $primaryFont;
   font-size: $fontSize;
   color: $fontColor;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
 }
 
 body {
@@ -22,25 +19,44 @@ body {
 
 .content-wrapper {
   display: flex;
-  flex-direction: row;
-  flex: 1;
+  flex-direction: column;
 }
 
 .left-container {
-  height: 100%;
-  width: 300px;
+  background-color: #213744;
   padding: 20px;
-  padding-top: 0px;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  position: sticky;
+  max-height: 500px;
+  bottom: 0;
+}
+
+$mobile-breakpoint: 767px;
+
+@media (max-width: $mobile-breakpoint) and (orientation: landscape) {
+  .content-wrapper {
+    flex-direction: row;
+  }
+
+  .left-container {
+    flex: 1;
+    height: 100%;
+    top: 0;
+    right: 0;
+  }
 }
 
 .game-container {
+  width: 100%;
   display: flex;
-  flex: 1;
-  // min-width: 300px;
-  max-width: fit-content;
   background-color: #0f212f;
+  max-width: fit-content;
   padding: 20px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  // box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  overflow-x: auto;
+  overflow-y: auto;
+  align-items: center;
 }
 
 .info-container {
@@ -57,7 +73,7 @@ body {
   }
 
   .last-payout {
-    color: #3BC1E2;
+    color: #3bc1e2;
   }
 }
 
@@ -118,26 +134,42 @@ body {
   &.green-button {
     background-color: #4caf50;
     transition: background-color 0.3s ease-in-out !important;
+
     &:not(:disabled):hover {
       background-color: #45a049 !important;
     }
+
     &:active {
       background-color: #3e9148 !important;
     }
+
     &:before {
       opacity: 0;
       transition: opacity 0.3s ease-in-out !important;
     }
+
     &:hover:before {
       opacity: 1 !important;
     }
+
     &:disabled {
       background-color: gray;
       cursor: default;
     }
+
     &:not(:disabled):after {
       background-color: transparent;
       transition: none;
+    }
+  }
+}
+
+@media (max-width: #{$mobile-breakpoint}) {
+  .custom-button {
+    height: 30px !important;
+
+    select {
+      padding: 0px;
     }
   }
 }
@@ -179,16 +211,28 @@ body {
   }
 }
 
+@media (max-width: #{$mobile-breakpoint}) {
+  .title-container {
+    span:first-child {
+      font-size: 1em;
+      font-weight: bold;
+    }
 
-
-
+    span:last-child {
+      font-weight: 500;
+      font-size: 1em;
+      margin-top: 5px;
+    }
+  }
+}
 
 .modal-overlay {
   position: fixed;
-  top: 0;
+
   left: 0;
   width: 100%;
   height: 100%;
+
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -201,7 +245,8 @@ body {
   padding: 20px;
   border-radius: 4px;
   position: relative;
-  width: 400px; 
+  width: 400px;
+  align-self: center;
 }
 
 .close-button {

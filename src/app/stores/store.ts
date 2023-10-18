@@ -30,6 +30,7 @@ class WebSocketStore {
   multipliers: Multiplier = {};
   betAmount: number = 0;
   lastPayout: number = 0;
+  win: number = 0;
 
   error: string = "";
 
@@ -137,9 +138,12 @@ class WebSocketStore {
             if (payload.phase === Phases.betsOpen) {
               this.selectedCells = [];
               this.betSum = 0;
+              this.win = 0;
             }
+
             if (payload.phase === Phases.gameResult) {
               this.lastPayout = payload.payout > 0 ? payload.payout : this.lastPayout;
+              this.win = payload.payout;
               this.multipliers = payload.multipliers;
               const test = findKeyWithLargestValue(payload.multipliers);
               this.cheatSettings.succCells = [...this.cheatSettings.succCells, `${test}`];

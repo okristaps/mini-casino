@@ -55,7 +55,7 @@ const Grid: React.FC<GridProps> = observer(
             }}
           >
             <div className="cell-label">{cellKey}</div>
-            {/* {bet > 0 && <div className="cell-bet">${bet.toFixed(1)}</div>} */}
+            {bet > 0 && <div className="cell-bet">${bet.toFixed(1)}</div>}
             {multiplier > 0 && phase === Phases.gameResult && (
               <div className="cell-multiplier">x{multiplier.toFixed(1)}</div>
             )}

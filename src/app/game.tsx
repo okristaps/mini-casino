@@ -1,12 +1,4 @@
-import {
-  BetOptions,
-  Controls,
-  ErrorModal,
-  Grid,
-  Header,
-  Info,
-  ListMessagesComponent,
-} from "@components/index";
+import { ErrorModal, Grid, Info } from "@components/index";
 import { useWebSocketContext } from "@contexts/index";
 import { Phases } from "@types";
 import { observer } from "mobx-react";
@@ -59,28 +51,23 @@ const Game = observer(() => {
     <>
       <ErrorModal error={store.error} onClose={() => store.setError("")} />
       <div className="content-wrapper">
-        <div className="left-container">
-          <Header phase={phase} handleClick={handleHeader} />
-          <Info {...store}>
-            <BetOptions />
-            <Controls />
-          </Info>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <div className="game-container">
+            <Grid
+              cheatsEnabled={store.cheatSettings.cheatsEnabled}
+              betAmount={betAmount}
+              settings={settings}
+              betsDisabled={betsDisabled}
+              phase={phase}
+              multipliers={multipliers}
+              selectedCells={selectedCells}
+              size={levels[store.levelSettings.selectedLevel].grid}
+              onCellClick={handleCellClick}
+            />
+          </div>
         </div>
-        <div className="game-container">
-          <Grid
-            cheatsEnabled={store.cheatSettings.cheatsEnabled}
-            betAmount={betAmount}
-            settings={settings}
-            betsDisabled={betsDisabled}
-            phase={phase}
-            multipliers={multipliers}
-            selectedCells={selectedCells}
-            size={levels[store.levelSettings.selectedLevel].grid}
-            onCellClick={handleCellClick}
-          />
-        </div>
+        <Info {...store} handleHeader={handleHeader}></Info>
       </div>
-      <ListMessagesComponent />
     </>
   );
 });

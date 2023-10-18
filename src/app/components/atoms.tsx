@@ -2,48 +2,60 @@ import { parseCellsToAction } from "@app/helpers";
 import { useWebSocketContext } from "@contexts/context";
 import { Phases } from "@types";
 import { observer } from "mobx-react";
+import Controls from "./controls";
 
 const Info = ({
   phase,
   balance,
   lastPayout,
   betSum,
-  children,
   password,
+  win,
 }: {
   phase: string;
   balance: number;
   lastPayout: number;
   betSum: number;
-  children?: React.ReactNode;
   password?: string;
+  handleHeader: () => void;
+  win: number;
 }) => {
   return (
-    <div className="info-container">
-      <div className="title-container">
-        <div className="column">
-          <span>Balance</span>
-          <span>{balance.toFixed(1)}</span>
-        </div>
-        <div className="column">
-          <span>Total Bet</span>
-          <span>{betSum.toFixed(1)}</span>
-        </div>
-      </div>
-      {children}
+    <div className={`left-container`}>
+      <div className="info-container">
+        <div className="title-container">
+          <div className="column">
+            <span>Balance</span>
+            <span>{balance.toFixed(1)}</span>
+          </div>
 
-      <div style={{ marginTop: 20 }}>
-        {lastPayout !== 0 && <h1 className="last-payout"> Last Payout: {lastPayout.toFixed(1)}</h1>}
-        {lastPayout !== 0 && (
-          <h1 className="feature-win" style={{ marginTop: 10, marginBottom: 10 }}>
-            Feature win : {lastPayout.toFixed(1)}
-          </h1>
-        )}
+          <div className="column">
+            <span style={{ color: phase === Phases.betsOpen ? "green" : "white" }}>{phase}</span>
+            {<span style={{ fontSize: 15 }}>Last payout: {lastPayout.toFixed(1)}</span>}
+          </div>
+
+          <div className="column">
+            <span>Total Bet</span>
+            <span>{betSum.toFixed(1)}</span>
+          </div>
+        </div>
+
         {password && (
           <h1 className="feature-win" style={{ marginTop: 10, marginBottom: 10 }}>
             Unlocked password: {password}
           </h1>
         )}
+
+        <BetOptions />
+        <Controls />
+
+        <div style={{ marginTop: 20 }}>
+          {win !== 0 && (
+            <h1 className="feature-win" style={{ marginTop: 10, marginBottom: 10 }}>
+              Feature win : {lastPayout.toFixed(1)}
+            </h1>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -85,14 +97,6 @@ const BetOptions = () => {
   );
 };
 
-const Header = ({ phase, handleClick }: { phase: string; handleClick: () => void }) => {
-  return (
-    <div style={{ textAlign: "center" }} onClick={handleClick}>
-      <h1 style={{ color: "white" }}> {phase} </h1>
-    </div>
-  );
-};
-
 const ListMessagesComponent = observer(() => {
   const { store } = useWebSocketContext();
 
@@ -111,4 +115,4 @@ const ListMessagesComponent = observer(() => {
   );
 });
 
-export { BetOptions, Info, ListMessagesComponent, Header };
+export { BetOptions, Info, ListMessagesComponent };
