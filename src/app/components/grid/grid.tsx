@@ -1,8 +1,7 @@
-import { Phases, Multiplier } from "@types";
+import { Multiplier, Phases, Settings } from "@types";
 import { observer } from "mobx-react";
-import React, { useEffect } from "react";
+import React from "react";
 import { getBgColor } from "./helpers";
-import { Settings } from "@types";
 
 import ColumnSelector from "@components/cheats/colcheats";
 import { useWebSocketContext } from "@contexts/context";
@@ -65,6 +64,7 @@ const Grid: React.FC<GridProps> = observer(
           </div>
         );
       }
+
       gridItems.push(
         <div key={row} className="grid-row">
           {rowItems}
@@ -72,28 +72,13 @@ const Grid: React.FC<GridProps> = observer(
       );
     }
 
-    const columnKeys = gridItems?.flatMap(
+    const columnKeys: string[] = gridItems?.flatMap(
       (obj) => obj?.props?.children?.map((child: any) => child.key) || []
-    );
-
-    const groupedKeys: Record<string, string[]> = (columnKeys || [])?.reduce(
-      (groups: Record<string, string[]>, key: string) => {
-        const initialLetter = key.charAt(0);
-
-        if (!groups[initialLetter]) {
-          groups[initialLetter] = [];
-        }
-
-        groups[initialLetter].push(key);
-
-        return groups;
-      },
-      {}
     );
 
     return (
       <div style={{ flexDirection: "column" }}>
-        {cheatsEnabled && <ColumnSelector groupedKeys={groupedKeys} />}
+        {cheatsEnabled && <ColumnSelector columnKeys={columnKeys} />}
         <div className="grid-container">{gridItems}</div>
       </div>
     );

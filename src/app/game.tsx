@@ -1,12 +1,10 @@
 import { ErrorModal, Grid, Info } from "@components/index";
-import { useWebSocketContext } from "@contexts/index";
-import { Phases } from "@types";
+import { Phases, Store } from "@types";
 import { observer } from "mobx-react";
 import { useEffect } from "react";
 import { levels } from "./constants";
 
-const Game = observer(() => {
-  const { store } = useWebSocketContext();
+const Game = observer(({ store }: { store: Store }) => {
   const { selectedCells, betAmount, multipliers, phase, balance, settings, previousBetInfo } =
     store;
 
@@ -42,10 +40,7 @@ const Game = observer(() => {
       )
       .then(() => {
         store.handleBet(cellKey, betAmount);
-      })
-      .catch((err) => store.setError(err));
-
-  const handleHeader = () => store.doWeirdStuff();
+      });
 
   return (
     <>
@@ -66,7 +61,7 @@ const Game = observer(() => {
             />
           </div>
         </div>
-        <Info {...store} handleHeader={handleHeader}></Info>
+        <Info store={store} />
       </div>
     </>
   );
