@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { MessageTypes, Phases, Bet, Multiplier, Settings } from "@types";
 import { levels } from "@app/constants";
 import { findKeyWithLargestValue } from "./helpers";
@@ -130,39 +130,42 @@ class WebSocketStore {
           resolve();
         };
         this.ws.onmessage = (event) => {
-          const jsonEvent = JSON.parse(event.data);
-          const { type, payload } = jsonEvent;
+          runInAction(() => {
+            const jsonEvent = JSON.parse(event.data);
+            const { type, payload } = jsonEvent;
 
-          if (payload.phase === Phases.betsOpen) {
-            this.selectedCells = [];
-            this.betSum = 0;
-          }
-          if (payload.phase === Phases.gameResult) {
-            this.lastPayout = payload.payout > 0 ? payload.payout : this.lastPayout;
-            this.multipliers = payload.multipliers;
-            const test = findKeyWithLargestValue(payload.multipliers);
-            this.cheatSettings.succCells = [...this.cheatSettings.succCells, `${test}`];
-            this.setPreviousBets();
-          }
-
-          if (type === MessageTypes.settings) {
-            this.settings = {
-              betLimits: payload.betLimits,
-              chips: payload.chips,
-            };
-            this.betAmount = payload.chips[0] ?? 0.1;
-          }
-
-          if (type === MessageTypes.game) {
-            this.phase = payload.phase;
-            this.balance = payload.balance;
-
-            if (payload.password && payload.password !== this.levelSettings.password) {
-              this.password = payload.password;
+            if (payload.phase === Phases.betsOpen) {
+              this.selectedCells = [];
+              this.betSum = 0;
             }
-          }
-          this.addMessage(event.data);
+            if (payload.phase === Phases.gameResult) {
+              this.lastPayout = payload.payout > 0 ? payload.payout : this.lastPayout;
+              this.multipliers = payload.multipliers;
+              const test = findKeyWithLargestValue(payload.multipliers);
+              this.cheatSettings.succCells = [...this.cheatSettings.succCells, `${test}`];
+              this.setPreviousBets();
+            }
+
+            if (type === MessageTypes.settings) {
+              this.settings = {
+                betLimits: payload.betLimits,
+                chips: payload.chips,
+              };
+              this.betAmount = payload.chips[0] ?? 0.1;
+            }
+
+            if (type === MessageTypes.game) {
+              this.phase = payload.phase;
+              this.balance = payload.balance;
+
+              if (payload.password && payload.password !== this.levelSettings.password) {
+                this.password = payload.password;
+              }
+            }
+            this.addMessage(event.data);
+          });
         };
+
         this.ws.onclose = () => {
           console.log("WebSocket disconnected");
           this.setError("WebSocket disconnected");
