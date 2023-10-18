@@ -11,8 +11,8 @@ interface CheatSettings {
 
 class WebSocketStore {
   levelSettings = {
-    selectedLevel: 2,
-    password: "Hello World!",
+    selectedLevel: 1,
+    password: "",
     gameStarted: false,
   };
 
