@@ -23,7 +23,7 @@ const ColumnSelector: React.FC<ColumnSelectorProps> = ({ groupedKeys }) => {
         );
         store.handleBet(cellKey, 1);
       } catch (error) {
-        console.error("Error placing bet:", error);
+        store.setError(`${error}`);
       }
     }
   };

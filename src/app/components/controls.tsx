@@ -26,12 +26,13 @@ const Controls: React.FC = observer(() => {
       .then(() => {
         store.repeatPreviousBets();
       })
-      .catch((err) => console.log("error", err));
+      .catch((err) => store.setError(err));
 
   const handleStartGame = async () =>
     await store
       .sendWebSocketMessage(JSON.stringify({ type: "startGame" }))
-      .then(() => store.setPreviousBets());
+      .then(() => store.setPreviousBets())
+      .catch((err) => store.setError(err));
 
   // for some reason the server isnt taking the negative bet and the undo doesnt work properly please let me know if its a mistake on my end
   const handleUndoBets = async () =>
@@ -43,7 +44,7 @@ const Controls: React.FC = observer(() => {
         })
       )
       .then(() => store.undoLastBet())
-      .catch((err) => console.log("error", err));
+      .catch((err) => store.setError(err));
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>

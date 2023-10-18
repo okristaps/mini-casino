@@ -13,6 +13,7 @@ class WebSocketStore {
   levelSettings = {
     selectedLevel: 2,
     password: "Hello World!",
+    gameStarted: false,
   };
 
   selectedLevel = levels[1];
@@ -29,6 +30,8 @@ class WebSocketStore {
   multipliers: Multiplier = {};
   betAmount: number = 0;
   lastPayout: number = 0;
+
+  error: string = "";
 
   previousBetInfo: any = {
     betSum: 0,
@@ -101,6 +104,18 @@ class WebSocketStore {
     if (this.cheatSettings?.clickCount === 10) this.cheatSettings.cheatsEnabled = true;
   }
 
+  setError(error: string) {
+    this.error = error;
+  }
+
+  setLevelSettings(password: string, selectedLevel: number, gameStarted: boolean) {
+    this.levelSettings = {
+      selectedLevel,
+      password,
+      gameStarted,
+    };
+  }
+
   async connectWebSocket() {
     return new Promise<void>((resolve, reject) => {
       try {
@@ -144,6 +159,7 @@ class WebSocketStore {
 
             if (payload.password && payload.password !== this.levelSettings.password) {
               this.levelSettings = {
+                gameStarted: true,
                 password: payload.password,
                 selectedLevel: this.levelSettings.selectedLevel + 1,
               };
@@ -153,6 +169,7 @@ class WebSocketStore {
         };
         this.ws.onclose = () => {
           console.log("WebSocket disconnected");
+          this.setError("WebSocket disconnected");
         };
       } catch (error) {
         reject(error);
