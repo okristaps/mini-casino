@@ -6,9 +6,7 @@ import Game from "./game";
 const App = observer(() => {
   const { store } = useWebSocketContext();
 
-  return (
-    <div className="body">{!store.levelSettings.gameStarted ? <Game /> : <LevelsModal />}</div>
-  );
+  return <div className="body">{store.levelSettings.gameStarted ? <Game /> : <LevelsModal />}</div>;
 });
 
 export default App;
