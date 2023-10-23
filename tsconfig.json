@@ -20,15 +20,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "useDefineForClassFields": true,
-    "paths": {
-      "@stores/*": ["./src/app/stores/*"],
-      "@contexts/*": ["./src/app/context/*"],
-      "@components/*": ["./src/app/components/*"],
-      "@scss/*": ["./src/scss/*"],
-      "@app/*": ["./src/app/*"],
-      "@types": ["./src/types.ts"]
-    }
+    
   },
+  "extends": "./tsconfing.path.json",
   "include": [
     "src"
   ]
