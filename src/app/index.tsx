@@ -7,6 +7,8 @@ const App = observer(() => {
   const { store } = useWebSocketContext();
   const { levelSettings } = store;
 
+
+
   return (
     <div className="body">
       {levelSettings.gameStarted ? <Game store={store} /> : <LevelsModal />}
